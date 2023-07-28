@@ -1,34 +1,11 @@
-# Create Svelte ChatGPT
 
-**`create-svelte-chatgpt`** is a project generator for building [SvelteKit](https://kit.svelte.dev/) applications powered by [ChatGPT](https://platform.openai.com/docs/api-reference). It comes with a pre-built example chat interface and other common features integrated.
-
-Features include:
-
-- [ChatGPT](https://platform.openai.com/docs/api-reference) integration using Vercel's [AI](https://github.com/vercel-labs/ai) package, which allows for streamed responses.
-- Chat interface using [TailwindCSS](https://tailwindcss.com/) for styling / animations.
 
 ## Getting Started
 
 ### Installation
-
 ```bash
-npx create-svelte-chatgpt@latest
+npm build
 ```
-
-### Add Environment Variable(s)
-
-Create a `.env` file in the root directory and add your OpenAI API key.
-
-**You can get your API key [here](https://platform.openai.com/account/api-keys) from the OpenAI dashboard.**
-
-```bash
-OPENAI_API_KEY=xxx
-```
-
-## Demo
-
-https://github.com/WillKre/create-svelte-chatgpt/assets/7396157/de9897bb-28e3-4e71-b142-7ce81afdd264
-
 ## Development
 
 To start a development server:
