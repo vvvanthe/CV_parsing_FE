@@ -26,7 +26,7 @@ async def create_files(files: Annotated[list[bytes], File()]):
     return {"file_sizes": [len(file) for file in files]}
 
 
-@app.post("/uploadfiles/")
+@app.post("/uploadfiles")
 async def upload_files(files: List[UploadFile]= File(...),name:str= Form(...), link:str= Form(...) ):
     # File upload processing logic here
     # For example, you can save the files, perform some operations, etc.
@@ -34,4 +34,4 @@ async def upload_files(files: List[UploadFile]= File(...),name:str= Form(...), l
     # Replace the following line with your desired processing logic:
     for file in files:
         print(file.filename)
-    return JSONResponse(content={"message": "Files uploaded successfully"}, status_code=201)
+    return JSONResponse(content={"message": "NEE Files uploaded successfully"}, status_code=201)

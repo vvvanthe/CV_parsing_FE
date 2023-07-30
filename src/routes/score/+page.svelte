@@ -2,32 +2,71 @@
   import { Card, Button, Avatar,Modal ,GradientButton,Input } from "flowbite-svelte";
   import { Fileupload, Label, Listgroup, ListgroupItem,Helper, Toast,Img,Spinner   } from 'flowbite-svelte'
   import axios from "axios";
+  import { Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell, TableSearch } from 'flowbite-svelte';
   import { BottomNav, BottomNavItem,Tooltip } from "flowbite-svelte"
+  import { onMount, afterUpdate  } from "svelte";
   import pdf_logo from '$lib/images/r.png';
   let defaultModal = false;
+  let scoringModal = false;
   let upload_files=[]
-
+  let flagLoading = false
+  let temp
+  let jd_files=[]
+  let tableData =[]
+  let temTable = []
   async function handleFileUpload() {
-  
+    flagLoading = true
     const formData = new FormData();
 
     for (const file of upload_files) {
-      formData.append("files", file);
+      formData.append("jd_files", file);
     }
-    formData.append("name", 'Nam Long');
-    formData.append("link", 'hehe');
 
     try {
-      const response = await axios.post("http://localhost:8000/uploadfiles/", formData, {
+      const response = await axios.post("https://cvscreenbe.ap.ngrok.io/api/upload_jd", formData, {
         headers: { "Content-Type": "multipart/form-data" },
         maxRedirects: 0, // Disable redirects
       });
 
       console.log("Server Response:", response.data);
+      flagLoading = true
+
+      
+
       // Handle the response data as needed
     } catch (error) {
       console.error("Error uploading files:", error);
       // Handle the error
+    }
+  }
+
+  async function handleScoring(jdfilename) {
+
+ 
+    let formData = {
+    jd_file : jdfilename,
+
+  };
+ 
+
+    try {
+      const response = await axios.post("https://cvscreenbe.ap.ngrok.io/api/load_score", new URLSearchParams(formData).toString(), {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        maxRedirects: 0, // Disable redirects
+      });
+      tableData = response.data.data
+      console.log("Server Response:", response.data.data);
+      // Handle the response data as needed
+    } catch (error) {
+      console.error("Error uploading files:", error);
+      // Handle the error
+    }
+    scoringModal= true
+  }
+
+  $: {
+    if (defaultModal===false){
+      upload_files=[]
     }
   }
 
@@ -36,6 +75,32 @@
       upload_files=[]
     }
   }
+  onMount(async () => {
+      try {
+      const response2 = await fetch('https://cvscreenbe.ap.ngrok.io/api/load_jdlist');
+		  temp = await response2.json();
+      jd_files = await temp.data;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }   
+  });
+
+  afterUpdate(async () => {
+    try {
+      const response2 = await fetch('https://cvscreenbe.ap.ngrok.io/api/load_jdlist');
+		  temp = await response2.json();
+      jd_files = await temp.data;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+   
+  });
+  let searchTerm = '';
+
+  $: filteredItems = tableData.filter(
+    (item) => item.cv_filename.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
+  );
+
 
 </script>
 <div class="text-4xl font-bold text-center pt-1 pb-5">
@@ -47,37 +112,20 @@
 <!-- List CV files -->
 <div class=" grid grid-cols-3 gap-2 border-10 bg-slate-200 font-bold item-center p-3 rounded-lg shadow-md" >
 
+  
+
+  {#each jd_files as jdname (jdname)}
   <Card>
 
     <p class="mb-3 font-medium text-gray-700 dark:text-gray-400 leading-tight">
-      Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.
+      {jdname}
     </p>
-    <GradientButton outline color="purpleToBlue" class="w-fit">
+    <GradientButton  color="purpleToBlue" class="w-fit" on:click={()=>{handleScoring(jdname)}}>
       Scoring    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 ml-2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
       
     </GradientButton>
   </Card>
-
-  <Card>
-
-    <p class="mb-3 font-medium text-gray-700 dark:text-gray-400 leading-tight">
-      Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.
-    </p>
-    <GradientButton outline color="purpleToBlue" class="w-fit">
-      Scoring    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 ml-2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
-      
-    </GradientButton>
-  </Card>
-  <Card>
-
-    <p class="mb-3 font-medium text-gray-700 dark:text-gray-400 leading-tight">
-      Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.
-    </p>
-    <GradientButton outline color="purpleToBlue" class="w-fit">
-      Scoring    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 ml-2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
-      
-    </GradientButton>
-  </Card>
+{/each}
 </div>
 
 
@@ -101,6 +149,52 @@
   </form>
   <svelte:fragment slot='footer'>
     <Button on:click={handleFileUpload} disabled={upload_files.length===0}>Upload</Button>
+    <Button color="alternative" on:click={()=>{upload_files=[]}}>Decline</Button>
+  </svelte:fragment>
+</Modal>
+
+
+
+
+<Modal title="Scoring windows" bind:open={scoringModal} autoclose size='xl'>
+  
+  {#if flagLoading}
+  <div class="flex items-center text-center justify-center w-full">
+    
+    <br>
+    <p class="text-lg text-purple-700 font-bold">Extracting... &nbsp</p>
+    <Spinner color="purple" />
+  </div>
+
+  
+    {:else}
+
+    <TableSearch placeholder="Search by name" hoverable={true} bind:inputValue={searchTerm}  striped={true} >
+      <TableHead>
+        <TableHeadCell>Name</TableHeadCell>
+        <TableHeadCell>Education match</TableHeadCell>
+        <TableHeadCell>Experience match</TableHeadCell>
+        <TableHeadCell>Skill match</TableHeadCell>
+        <TableHeadCell>Overall score</TableHeadCell>
+        <TableHeadCell>Overall evaluation</TableHeadCell>
+      </TableHead>
+      <TableBody class="divide-y">
+        {#each filteredItems as item}
+          <TableBodyRow>
+            <TableBodyCell>{item.cv_filename}</TableBodyCell>
+            <TableBodyCell>{item['Education match']}</TableBodyCell>
+            <TableBodyCell>{item['Experience match']}</TableBodyCell>
+            <TableBodyCell>{item['Skill match']}</TableBodyCell>
+            <TableBodyCell>{item['Overall score']}</TableBodyCell>
+            <TableBodyCell tdClass='w-200'>{item['Overall evaluation']}</TableBodyCell>
+          </TableBodyRow>
+        {/each}
+      </TableBody>
+    </TableSearch>
+  {/if}
+
+  <svelte:fragment slot='footer'>
+    
     <Button color="alternative" on:click={()=>{upload_files=[]}}>Decline</Button>
   </svelte:fragment>
 </Modal>
