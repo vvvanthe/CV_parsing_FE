@@ -5,7 +5,7 @@
   import { Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell, TableSearch } from 'flowbite-svelte';
   import { BottomNav, BottomNavItem,Tooltip } from "flowbite-svelte"
   import { onMount, afterUpdate  } from "svelte";
-  import pdf_logo from '$lib/images/r.png';
+
   let defaultModal = false;
   let scoringModal = false;
   let upload_files=[]
@@ -14,6 +14,7 @@
   let jd_files=[]
   let tableData =[]
   let temTable = []
+  let messE = ''
   async function handleFileUpload() {
     flagLoading = true
     const formData = new FormData();
@@ -41,12 +42,25 @@
   }
 
   async function handleScoring(jdfilename) {
+    flagLoading = true
+    scoringModal= true
 
- 
+    
     let formData = {
     jd_file : jdfilename,
 
   };
+      try {
+      const response2 = await fetch('https://cvscreenbe.ap.ngrok.io/api/cv_score');
+      
+      
+
+    } catch (error) {
+      
+      console.error("Error fetching data:", error);
+      flagLoading = false
+      messE = 'Extracting error'
+    }
  
 
     try {
@@ -55,13 +69,16 @@
         maxRedirects: 0, // Disable redirects
       });
       tableData = response.data.data
-      console.log("Server Response:", response.data.data);
+      // console.log("Server Response:", response.data.data);
+      flagLoading = false
       // Handle the response data as needed
     } catch (error) {
       console.error("Error uploading files:", error);
+      messE = 'Loading error'
+      flagLoading = false
       // Handle the error
     }
-    scoringModal= true
+    
   }
 
   $: {
@@ -168,6 +185,7 @@
 
   
     {:else}
+    {#if messE ===''}
 
     <TableSearch placeholder="Search by name" hoverable={true} bind:inputValue={searchTerm}  striped={true} >
       <TableHead>
@@ -191,6 +209,14 @@
         {/each}
       </TableBody>
     </TableSearch>
+    {:else}
+    <div class="flex items-center text-center justify-center w-full">
+    
+      <br>
+      <p class="text-lg text-red-700 font-bold">{messE}!
+    </div>
+
+    {/if}
   {/if}
 
   <svelte:fragment slot='footer'>
