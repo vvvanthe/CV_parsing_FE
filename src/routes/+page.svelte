@@ -384,7 +384,7 @@
 
                       <p class="flex justify-between text-sm"><strong class="text-base">{project.project_name}</strong>{project.time}</p>
                      
-                      <p class="text-xs">- Number of member: {project.time}</p>
+                      <p class="text-xs">- Number of member: {project.number_of_members}</p>
                       <p class="text-xs">- Technologies: {project.used_technologies}</p>
 
                   </li>
