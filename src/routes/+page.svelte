@@ -71,14 +71,7 @@
       console.error("Error fetching data:", error);
     }
 
-    // try {
-    //   const response2 = await fetch('https://cvscreenbe.ap.ngrok.io/api/cv_score');
-    //   flagLoading = false
 
-    // } catch (error) {
-    //   flagLoading = false
-    //   console.error("Error fetching data:", error);
-    // }
 
     try {
       const response2 = await fetch('https://cvscreenbe.ap.ngrok.io/api/load_extractshort');
@@ -162,16 +155,7 @@
    
   });
 
-  afterUpdate(async () => {
-    // try {
-    //   const response2 = await fetch('https://cvscreenbe.ap.ngrok.io/api/load_cvpdflist');
-		//   temp = await response2.json();
-    //   cv_files = await temp.data;
-    // } catch (error) {
-    //   console.error("Error fetching data:", error);
-    // }
-   
-  });
+
 
   
   
@@ -320,8 +304,7 @@
               </ul>
               <div class="flex justify-between items-center">
                   <div>
-                      <div class="bg-cover bg-no-repeat rounded-full h-52 w-52"
-                          style="background-image: url(../bootstrap/dog.jpg)">
+                      <div class="bg-cover bg-no-repeat rounded-full h-52 w-52">
                           <img class="w-1/2" src={logo} alt="">
                       </div>
                   </div>
@@ -348,17 +331,6 @@
                     <li class="px-2 mt-1"><strong class="mr-1">Location</strong><span class="block">{singleCV.contact_information.address||'N/A'}</span></li>
                 </ul>
 
-                <!-- github stats -->
-                <!-- <strong class="text-xl font-medium ">Github Stats</strong>
-                <ul class="flex w-full mt-2 mb-10">
-                    <li class="px-2 mt-2 w-4/12 bg-pink-600 text-white text-center rounded-tl-lg rounded-bl-lg">HTML
-                    </li>
-                    <li class="px-2 mt-2 w-4/12 bg-blue-600 text-white text-center">CSS</li>
-                    <li class="px-2 mt-2 w-5/12 bg-yellow-500 text-white text-center rounded-tr-lg rounded-br-lg">JS
-                    </li>
-
-                </ul> -->
-                <!-- skills -->
                 <strong class="text-xl font-medium">Skills</strong>
                 <ul class="mt-2 mb-10">
                   {#if singleCV.skills.spoken_language!=='N/A'}
@@ -370,13 +342,7 @@
                   {#if singleCV.skills.spoken_language==='N/A' && singleCV.skills.soft_skill==='N/A'}
                   <li class="px-2 mt-1 text-sm" >{'N/A'}</li>
                   {/if}
-                  
-                  
 
-                    <!-- <li class="px-2 mt-1">CSS</li>
-                    <li class="px-2 mt-1">JavaScript</li>
-                    <li class="px-2 mt-1">React</li>
-                    <li class="px-2 mt-1">Node.js</li> -->
                 </ul>
                 <strong class="text-xl font-medium">Programming Language</strong>
                 <ul class="mt-2 mb-10">
@@ -406,20 +372,7 @@
             </div>
             <!-- info -->
             <div class="w-4/6">
-              <section>
-                  <!-- about me -->
-                  <!-- <h2 class="text-2xl pb-1 border-b font-semibold">About</h2>
-                  <p class="mt-4 text-xs">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Possimus
-                      deserunt modi qui. Dolorum aliquid quasi velit cupiditate officia magnam impedit, sapiente
-                      hic, eaque quaerat ullam fugiat reprehenderit voluptates odit! Error.
-                      Tempore fuga iusto eveniet omnis impedit repellat ab repellendus nesciunt similique. Iure
-                      voluptates, enim nesciunt tempora amet earum, porro rem ad et sequi corrupti neque quidem?
-                      Debitis quo quibusdam nemo.
-                      Nam doloremque perferendis tempora asperiores, ullam praesentium et, voluptas pariatur illo
-                      aliquid similique, fugiat repellendus ipsa necessitatibus minus hic culpa quasi. Sed
-                      voluptate itaque accusantium earum cupiditate ipsa neque magnam!</p> -->
 
-              </section>
               {#if singleCV.projects.length>0}
               <section>
                   <!-- projects -->
@@ -428,12 +381,7 @@
                   <ul class="mt-1">
                     {#each singleCV.projects as project}
                     <li class="py-2">
-                      <!-- <div class="flex justify-between my-1">
-                          <strong>{project.project_name}</strong>
-                          <p class="flex">
-                              <span class="bg-gray-600 text-white px-2 py-1 ml-1 text-xs rounded">{project.time}</span>
-                          </p>
-                      </div> -->
+
                       <p class="flex justify-between text-sm"><strong class="text-base">{project.project_name}</strong>{project.time}</p>
                      
                       <p class="text-xs">- Number of member: {project.time}</p>
