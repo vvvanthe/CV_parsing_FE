@@ -7,6 +7,7 @@
   import pdf_logo from '$lib/images/r.png';
   import { onMount, afterUpdate  } from "svelte";
   import logo from '$lib/images/aivision.png';
+    import { each } from "svelte/internal";
 
   let temp
   
@@ -255,7 +256,7 @@
 
   <svelte:fragment slot='footer'>
     <Button on:click={handleDownload} disabled={flagLoading}>Download</Button>
-    <Button color="alternative" on:click={()=>{upload_files=[]}} >Decline</Button>
+    <Button color="alternative" on:click={()=>{upload_files=[]}} >Exit</Button>
   </svelte:fragment>
 </Modal>
 
@@ -320,7 +321,9 @@
         <main class="flex gap-x-10 mt-10">
             <div class="w-2/6">
                 <!-- contact details -->
-                <strong class="text-xl font-medium">Contact Details</strong>
+                <br>
+                
+                <strong class="text-xl font-medium pt-20">Contact Details</strong>
                 <ul class="mt-2 mb-10">
                     <li class="px-2 mt-1"><strong class="mr-1">Phone </strong>
                         <p class="block">{singleCV.contact_information.phone||'N/A'}</p>
@@ -329,51 +332,95 @@
                         <a href="mailto:" class="block">{singleCV.contact_information.email||'N/A'}</a>
                     </li>
                     <li class="px-2 mt-1"><strong class="mr-1">Location</strong><span class="block">{singleCV.contact_information.address||'N/A'}</span></li>
+                    <li class="px-2 mt-1"><strong class="mr-1">Link </strong>
+                      
+                      {#each singleCV.contact_information.urls as urls}
+                      <a href={urls} class="block">{urls}</a>
+                        
+                      {/each}
+                      
+                  </li>
                 </ul>
 
-                <strong class="text-xl font-medium">Skills</strong>
+                <strong class="text-xl font-medium">Spoken Language</strong>
                 <ul class="mt-2 mb-10">
-                  {#if singleCV.skills.spoken_language!=='N/A'}
-                  <li class="px-2 mt-1 text-sm">{singleCV.skills.spoken_language||'N/A'}</li>
-                  {/if}  
-                  {#if singleCV.skills.spoken_language==='N/A' && singleCV.skills.soft_skill!=='N/A'}
-                  <li class="px-2 mt-1 text-sm">{singleCV.skills.soft_skill||'N/A'}</li>
-                  {/if}  
-                  {#if singleCV.skills.spoken_language==='N/A' && singleCV.skills.soft_skill==='N/A'}
-                  <li class="px-2 mt-1 text-sm" >{'N/A'}</li>
-                  {/if}
-
+                  <li class="px-2 mt-1 text-sm">- {singleCV.skills.spoken_language.join(', ')}</li>
                 </ul>
+
+                <strong class="text-xl font-medium">Soft Skill</strong>
+                <ul class="mt-2 mb-10">
+                  
+                  {#each singleCV.skills.soft_skill as soft_skill}
+
+                  <li class="px-2 mt-1 text-sm">- {soft_skill}</li>
+                  {/each}
+                </ul>
+
+                <strong class="text-xl font-medium">Hard Skill</strong>
+                <ul class="mt-2 mb-10">
+                  
+                  {#each singleCV.skills.hard_skill as hard_skill}
+
+                  <li class="px-2 mt-1 text-sm">- {hard_skill}</li>
+                  {/each}
+                </ul>
+
+
+
+
                 <strong class="text-xl font-medium">Programming Language</strong>
                 <ul class="mt-2 mb-10">
-                  <li class="px-2 mt-1 text-sm">{singleCV.skills.programming_language||'N/A'}</li>
+                  <li class="px-2 mt-1 text-sm">- {singleCV.skills.programming_language.join(', ')}</li>
                 </ul>
       
                 <!-- what I'm learning these days -->
                 <strong class="text-xl font-medium">Certificates</strong>
                 <ul class="mt-2 mb-10">
 
-                  {#if singleCV.certificates.language_certificates!=='N/A'}
-                  <li class="px-2 mt-1 text-sm">{singleCV.certificates.language_certificates||'N/A'}</li>
-                  {/if}  
-                  {#if singleCV.certificates.language_certificates==='N/A' && singleCV.certificates.other_certificates!=='N/A'}
-                  <li class="px-2 mt-1 text-sm">{singleCV.certificates.other_certificates||'N/A'}</li>
-                  {/if}  
-                  {#if singleCV.certificates.language_certificates==='N/A' && singleCV.certificates.other_certificates==='N/A'}
-                  <li class="px-2 mt-1 text-sm">{'N/A'}</li>
-                  {/if}  
+                  
+                  {#if singleCV.certificates.language_certificates[0]==='N/A'&&singleCV.certificates.other_certificates[0]==='N/A'}
+                  <li class="px-2 mt-1 text-sm">- {'N/A'}</li>
+                  {:else if singleCV.certificates.language_certificates[0]!=='N/A' &&singleCV.certificates.other_certificates[0]==='N/A'}
+                  <li class="px-2 mt-1 text-sm">- {singleCV.certificates.language_certificates.join(', ')}</li>
+                  {:else if singleCV.certificates.language_certificates[0]==='N/A' &&singleCV.certificates.other_certificates[0]!=='N/A'}
+                  <li class="px-2 mt-1 text-sm">- {singleCV.certificates.other_certificates.join(', ')}</li>
+                  {:else}
+                  <li class="px-2 mt-1 text-sm">- {singleCV.certificates.language_certificates.join(', ')}</li>
+                  <li class="px-2 mt-1 text-sm">- {singleCV.certificates.other_certificates.join(', ')}</li>
+
+
+
+                  {/if}
+
+                 
 
                 </ul>
                 <strong class="text-xl font-medium">Achievements & Honor</strong>
-                <ul class="mt-2">
-                    <li class="px-2 mt-1 text-sm">{singleCV.achievements_and_honors||'N/A'}</li>
+                <ul class="mt-2 mb-10">
+                    
+
+                    {#each singleCV.achievements_and_honors as ac}
+                    <li class="px-2 mt-1 text-sm">- {ac}</li>
+                        
+                      {/each}
 
                 </ul>
+
+                <strong class="text-xl font-medium">References</strong>
+                <ul class="mt-2 mb-10">
+                    
+
+                    {#each singleCV.references as ref}
+                    <li class="px-2 mt-1 text-sm">- {ref}</li>
+                        
+                      {/each}
+
+                </ul> 
             </div>
             <!-- info -->
             <div class="w-4/6">
 
-              {#if singleCV.projects.length>0}
+              {#if singleCV.projects.length>0 && singleCV.projects[0]?.project_name!=='N/A'}
               <section>
                   <!-- projects -->
                  
@@ -384,8 +431,8 @@
 
                       <p class="flex justify-between text-sm"><strong class="text-base">{project.project_name}</strong>{project.time}</p>
                      
-                      <p class="text-xs">- Number of member: {project.number_of_members}</p>
-                      <p class="text-xs">- Technologies: {project.used_technologies}</p>
+                      <p class="text-xs"><strong>- Number of member:</strong> {project.number_of_members}</p>
+                      <p class="text-xs"><strong>- Technologies:</strong> {project.used_technologies}</p>
 
                   </li>
                     {/each}
@@ -403,11 +450,17 @@
                     <li class="pt-2">
                       <p class="flex justify-between text-sm"><strong class="text-base">{company.company_name}</strong>{company.time}</p>
                       <p class="flex justify-between text-base">{company.position}<small>{company.domain}</small></p>
+                      <p class="text-justify text-xs"><strong>- Technologies:</strong> {company.used_technologies}
+                      </p>
+
+                      {#each company.job_descriptions as jd }
                       <p class="text-justify text-xs">
-                        {company.job_descriptions}
+                        - {jd.replace('-','')}
                       </p>
-                      <p class="text-justify text-xs">Technologies: {company.used_technologies}
-                      </p>
+                        
+                      {/each}
+                      
+                      
                   </li>
 
                     {/each}
@@ -416,7 +469,7 @@
                   </ul>
               </section>
               {/if}
-              {#if singleCV.education.length>0}
+              {#if singleCV.education.length>0 && singleCV.education?.institution_name!=='N/A'}
               <section>
                   <!-- education -->
                   <h2 class="text-2xl mt-6 pb-1 border-b font-semibold">Education</h2>
@@ -431,6 +484,32 @@
                       
                   </ul>
               </section>
+              {/if}
+
+
+            {#if singleCV.publications[0]?.title!='N/A' && singleCV.publications.length!==0}
+              <section>
+                  <!-- Publication -->
+                  <h2 class="text-2xl mt-6 pb-1 border-b font-semibold">Publications</h2>
+                  <ul class="mt-2">
+                        
+                    {#each singleCV.publications as publication}
+                    <li class="pt-2">
+                      <p class="flex justify-between text-sm"><strong class="text-base">{publication.title}</strong>{publication.year}</p>
+                      <!-- <p class="flex justify-between text-base">{company.position}<small>{company.domain}</small></p>
+                      <p class="text-justify text-xs">
+                        {company.job_descriptions}
+                      </p>
+                      <p class="text-justify text-xs">Technologies: {company.used_technologies}
+                      </p> -->
+                  </li>
+
+                    {/each}
+
+
+                  </ul>
+              </section>
+
               {/if}
           </div>
       </main>
