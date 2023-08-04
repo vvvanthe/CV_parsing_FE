@@ -79,6 +79,7 @@
       
       temp = await response2.json();
       load_extractiontable = await temp.data;
+      // console.log(load_extractiontable)
       flagLoading = false
  
 
@@ -90,7 +91,7 @@
   }
 
   async function handleClickRow(cv_filename){
-    // console.log(cv_filename)
+    console.log(cv_filename)
 
 
     let formData = {
@@ -104,11 +105,13 @@
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         maxRedirects: 0, // Disable redirects
       });
-      console.log("Server Response:", response.data);
+      // console.log("Server Response:", response.data);
       singleCV = await response.data.data
+      console.log(singleCV)
+
       // Handle the response data as needed
     } catch (error) {
-      console.error("Error uploading files:", error);
+      console.error("Error  files:", error);
       // Handle the error
     }
 
@@ -139,7 +142,7 @@
   }
 
 
-  $: simplifiedData =load_extractiontable.map((item, index) => ({ id: index+1, Name: item.name, Birthday:item.birthday,DrPosition:item.desired_position, Gender:item.gender,Nationality:item.nationality, Filename:item.cv_filename}))
+  $: simplifiedData =load_extractiontable.map((item, index) => ({ id: index+1, Name: item.name[0], Birthday:item.birthday[0],DrPosition:item.desired_position[0], Gender:item.gender[0],Nationality:item.nationality[0], Filename:item.cv_filename}))
 
   
 
@@ -148,6 +151,7 @@
       try {
       const response2 = await fetch('https://cvscreenbe.ap.ngrok.io/api/load_cvpdflist');
 		  temp = await response2.json();
+      console.log('get')
       cv_files = await temp.data;
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -162,7 +166,7 @@
   
   let searchTerm = '';
 
-  $: filteredItems = simplifiedData.filter(
+  $:filteredItems = simplifiedData.filter(
     (item) => item.Name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
   );
 
@@ -182,7 +186,7 @@
   <Avatar src={pdf_logo} rounded/>
   
   <div class=" font-medium dark:text-white ">
-      <div  class="text-sm  dark:text-white">{cvname}</div>
+      <div  class="text-sm  dark:text-white pr-2 text-justify">{cvname}</div>
   </div>
 </div>
 {/each}
@@ -230,7 +234,7 @@
 
   
     {:else}
-    <TableSearch placeholder="Search by name" hoverable={true} bind:inputValue={searchTerm}>
+    <TableSearch placeholder="Search by name" hoverable={true} bind:inputValue={searchTerm}> 
       <TableHead>
         <TableHeadCell>ID</TableHeadCell>
         <TableHeadCell>Name</TableHeadCell>
@@ -544,7 +548,7 @@
         <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"></path>
         </svg>
-      <Tooltip arrow={false}>Upload JD</Tooltip>
+      <Tooltip arrow={false}>Upload CVs</Tooltip>
     </BottomNavItem>
   </div>
 

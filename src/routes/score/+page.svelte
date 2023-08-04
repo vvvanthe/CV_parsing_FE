@@ -1,9 +1,9 @@
 <script>
   import { Card, Button, Avatar,Modal ,GradientButton,Input } from "flowbite-svelte";
-  import { Fileupload, Label, Listgroup, ListgroupItem,Helper, Toast,Img,Spinner   } from 'flowbite-svelte'
+  import { Fileupload, Label, Listgroup, ListgroupItem,Helper,Img,Spinner   } from 'flowbite-svelte'
   import axios from "axios";
   import { Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell, TableSearch } from 'flowbite-svelte';
-  import { BottomNav, BottomNavItem,Tooltip } from "flowbite-svelte"
+  import { BottomNav, BottomNavItem,Tooltip,Popover } from "flowbite-svelte"
   import { onMount, afterUpdate  } from "svelte";
 
   let defaultModal = false;
@@ -31,6 +31,13 @@
 
       console.log("Server Response:", response.data);
       flagLoading = true
+      try {
+      const response2 = await fetch('https://cvscreenbe.ap.ngrok.io/api/load_jdlist');
+		  temp = await response2.json();
+      jd_files = await temp.data;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
 
       
 
@@ -103,13 +110,13 @@
   });
 
   afterUpdate(async () => {
-    try {
-      const response2 = await fetch('https://cvscreenbe.ap.ngrok.io/api/load_jdlist');
-		  temp = await response2.json();
-      jd_files = await temp.data;
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+    // try {
+    //   const response2 = await fetch('https://cvscreenbe.ap.ngrok.io/api/load_jdlist');
+		//   temp = await response2.json();
+    //   jd_files = await temp.data;
+    // } catch (error) {
+    //   console.error("Error fetching data:", error);
+    // }
    
   });
   let searchTerm = '';
@@ -126,6 +133,7 @@
 
 
 <Button >JD folder</Button>
+
 <!-- List CV files -->
 <div class=" grid grid-cols-3 gap-2 border-10 bg-slate-200 font-bold item-center p-3 rounded-lg shadow-md" >
 
@@ -166,7 +174,7 @@
   </form>
   <svelte:fragment slot='footer'>
     <Button on:click={handleFileUpload} disabled={upload_files.length===0}>Upload</Button>
-    <Button color="alternative" on:click={()=>{upload_files=[]}}>Decline</Button>
+    <Button color="alternative" on:click={()=>{upload_files=[]}}>Exit</Button>
   </svelte:fragment>
 </Modal>
 
@@ -189,22 +197,42 @@
 
     <TableSearch placeholder="Search by name" hoverable={true} bind:inputValue={searchTerm}  striped={true} >
       <TableHead>
-        <TableHeadCell>Name</TableHeadCell>
-        <TableHeadCell>Education match</TableHeadCell>
-        <TableHeadCell>Experience match</TableHeadCell>
-        <TableHeadCell>Skill match</TableHeadCell>
-        <TableHeadCell>Overall score</TableHeadCell>
-        <TableHeadCell>Overall evaluation</TableHeadCell>
+        
+        <Popover class="w-64 text-sm font-light normal-case" title="Meaning" triggeredBy="#b1">
+          And here's some amazing content. It's very engaging. Right?
+        </Popover>
+        <Popover class="w-64 text-sm font-light normal-case" title="Meaning" triggeredBy="#b2">
+          And here's some amazing content. It's very engaging. Right?
+        </Popover>
+        <Popover class="w-64 text-sm font-light normal-case" title="Meaning" triggeredBy="#b3">
+          And here's some amazing content. It's very engaging. Right?
+        </Popover>
+        <Popover class="w-64 text-sm font-light normal-case" title="Meaning" triggeredBy="#b4">
+          And here's some amazing content. It's very engaging. Right?
+        </Popover>
+        <Popover class="w-64 text-sm font-light normal-case" title="Meaning" triggeredBy="#b5">
+          And here's some amazing content. It's very engaging. Right?
+      </Popover>
+      </TableHead>
+      <TableHead>
+        
+        <TableHeadCell  class='text-center'>Name</TableHeadCell>      
+        <TableHeadCell id="b1" class='text-center'>Education</TableHeadCell>
+        <TableHeadCell id="b2" class='text-center'>Skill</TableHeadCell>
+        <TableHeadCell id="b3" class='text-center'>Experience</TableHeadCell>
+        <TableHeadCell id="b4" class='text-center'>Overall</TableHeadCell>
+        <TableHeadCell id="b5" class='text-center'>AI evaluation</TableHeadCell>
       </TableHead>
       <TableBody class="divide-y">
+
         {#each filteredItems as item}
           <TableBodyRow>
-            <TableBodyCell>{item.cv_filename}</TableBodyCell>
+            <TableBodyCell tdClass='w-50'>{item.cv_filename}</TableBodyCell>
             <TableBodyCell>{item['Education match']}</TableBodyCell>
-            <TableBodyCell>{item['Experience match']}</TableBodyCell>
             <TableBodyCell>{item['Skill match']}</TableBodyCell>
+            <TableBodyCell>{item['Experience match']}</TableBodyCell>
             <TableBodyCell>{item['Overall score']}</TableBodyCell>
-            <TableBodyCell tdClass='w-200'>{item['Overall evaluation']}</TableBodyCell>
+            <TableBodyCell tdClass='w-200 text-justify pr-2'>{item['Overall evaluation']}</TableBodyCell>
           </TableBodyRow>
         {/each}
       </TableBody>
@@ -221,7 +249,7 @@
 
   <svelte:fragment slot='footer'>
     
-    <Button color="alternative" on:click={()=>{upload_files=[]}}>Decline</Button>
+    <Button color="alternative" on:click={()=>{upload_files=[]}}>Exit</Button>
   </svelte:fragment>
 </Modal>
 
